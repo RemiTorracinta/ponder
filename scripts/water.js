@@ -1,6 +1,8 @@
     /* Point Array */
+	var width = window.innerWidth
+	var height = window.innerHeight
 	var ySize = 20; //number of points in y dimension
-	var xSize = Math.floor(ySize*window.innerWidth/window.innerHeight); //number of points in the x dimension
+	var xSize = Math.floor(ySize*width/height); //number of points in the x dimension
 	var yDist = window.innerHeight/(ySize-1); //vertical distance between points
 	var xDist = window.innerWidth/(xSize-1); //horizontal distance between points
     var point = new Array(xSize);
@@ -91,8 +93,8 @@
 			} else {
 				finX = (point[(i_idx - 1)][j_idx].getX() + point[(i_idx + 1)][j_idx].getX())/2;
 				finY = (point[i_idx][(j_idx - 1)].getY() + point[i_idx][(j_idx + 1)].getY())/2;
-				nextX = lerp(x,finX) + 5;
-				nextY = lerp(x,finX) + 5;
+				nextX = lerp(x,finX);
+				nextY = lerp(y,finY);
 			}	
 		}
 		
@@ -126,13 +128,48 @@
 
     
 	
-
-
-    function click(e) {
-    }
-
-    document.addEventListener('click', click);
-
+	
+	
+	var pNearI;
+	var pNearJ;
+	var mX
+	var mY
+	var flag
+	document.addEventListener("mousedown", function(e){
+		flag = 1;
+		if (e.pageX || e.pageY) { 
+			mX = e.pageX;
+			mY = e.pageY;
+		} else { 
+			mX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+			mY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+		}
+		mX -= canvas.offsetLeft;
+		mY -= canvas.offsetTop;
+		pNearI = Math.round(mX/width*xSize)
+		pNearJ = Math.round(mY/height*ySize)
+		point[pNearI][pNearJ].setX(mX)
+		point[pNearI][pNearJ].setY(mY)
+	}, false);
+	document.addEventListener("mouseup", function(e){
+		flag = 0;
+	}, false);
+	document.addEventListener("mousemove", function(e){
+		if(flag === 1){
+			if (e.pageX || e.pageY) { 
+				mX = e.pageX;
+				mY = e.pageY;
+			} else { 
+				mX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+				mY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+			}
+			mX -= canvas.offsetLeft;
+			mY -= canvas.offsetTop;
+			point[pNearI][pNearJ].setX(mX)
+			point[pNearI][pNearJ].setY(mY)
+		}
+		
+	}, false);
 
     /* Get the canvas id */
     var canvas = document.getElementById("simpleCanvas");
@@ -142,4 +179,4 @@
     var g = canvas.getContext("2d");
 
     /* Do the function, call every 30 milliseconds*/
-    var theInterval = setInterval(playGame, 30);
+    var theInterval = setInterval(playGame, 20);
