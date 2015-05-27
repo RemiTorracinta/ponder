@@ -1,13 +1,21 @@
     /* Point Array */
-    var point = new Array();
-    point[0] = new Point(150, 150); // x location of target, y location of target
+	var size = 50
+    var point = new Array(size);
+	for (var i = 0; i < size; i++) {
+            point[i] = new Array(size);
+			for (var j = 0; j < size; j++) {
+				point[i][j] = new Point(i*(window.innerWidth/(size-1)), j*(window.innerHeight/(size-1)));
+			}
+    }
+	/*point[0] = new Array(100);
+    point[0][0] = new Point(100, 100); // x location of target, y location of target
     point[1] = new Point(200, 350);
     point[2] = new Point(400, 350);
     point[3] = new Point(320, 250);
     point[4] = new Point(440, 190);
     point[5] = new Point(100, 350);
     point[6] = new Point(80, 120);
-    point[7] = new Point(130, 240);
+    point[7] = new Point(130, 240);*/
 
 
     /* Point OBJECT */
@@ -16,7 +24,7 @@
         var y = newY;
         var dx = 2;
         var dy = 4;
-        var radius = 10;
+        var radius = 2;
         var targetColour = "blue";
 
         /* public methods */
@@ -78,9 +86,11 @@
 		g.canvas.height = window.innerHeight;
         //player.draw();
 
-        for (var i = 0; i < 8; i++) {
-            point[i].move();
-            point[i].draw();
+        for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++){
+				point[i][j].move();
+				point[i][j].draw();
+			}
         }
 
         // draw the score
