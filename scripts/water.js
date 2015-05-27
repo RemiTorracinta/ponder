@@ -1,5 +1,5 @@
     /* Point Array */
-	var ySize = 50; //number of points in y dimension
+	var ySize = 20; //number of points in y dimension
 	var xSize = Math.floor(ySize*window.innerWidth/window.innerHeight); //number of points in the x dimension
 	var yDist = window.innerHeight/(ySize-1); //vertical distance between points
 	var xDist = window.innerWidth/(xSize-1); //horizontal distance between points
@@ -46,7 +46,12 @@
             g.closePath();
         }
 
-
+		function lerp(oldP,newP) {
+			return (oldP + (newP - oldP)*speed);
+		}
+		
+		
+        
         this.setX = setX;
 
         function setX(newX) {
@@ -76,26 +81,25 @@
         function getRadius() {
             return radius;
         }
-
-        this.move = move;
-
-        }
 		
-		function lerp(oldP,newP) {
-			return (oldP + (newP - oldP)*speed);
-		}
-		
+		this.move = move;
+        
         function move() {
-			if (((i == 0 || i == xSize) || j == 0) || j == ySize){
-				nextX = this.x;
-				nextY = this.y;
+			if (((i_idx == 0 || i_idx == (xSize-1)) || j_idx == 0) || j_idx == (ySize-1)){
+				nextX = x;
+				nextY = y;
 			} else {
-				finX = (point[i_idx-1][j_idx].getX() + point[i_idx+1][j_idx].getX())/2;
-				finY = (point[i_idx][j_idx-1].getY() + point[i_idx+1][j_idx+1].getY())/2;
-				nextX = lerp(x,finX);
-				nextY = lerp(x,finX);
+				finX = (point[(i_idx - 1)][j_idx].getX() + point[(i_idx + 1)][j_idx].getX())/2;
+				finY = (point[i_idx][(j_idx - 1)].getY() + point[i_idx][(j_idx + 1)].getY())/2;
+				nextX = lerp(x,finX) + 5;
+				nextY = lerp(x,finX) + 5;
 			}	
 		}
+		
+	}
+
+		
+		
 
 
 	
