@@ -1,10 +1,13 @@
     /* Point Array */
-	var size = 50
-    var point = new Array(size);
-	for (var i = 0; i < size; i++) {
-            point[i] = new Array(size);
-			for (var j = 0; j < size; j++) {
-				point[i][j] = new Point(i*(window.innerWidth/(size-1)), j*(window.innerHeight/(size-1)));
+	var ySize = 50; //number of points in y dimension
+	var xSize = Math.floor(ySize*window.innerWidth/window.innerHeight); //number of points in the x dimension
+	var yDist = window.innerHeight/(ySize-1); //vertical distance between points
+	var xDist = window.innerWidth/(xSize-1); //horizontal distance between points
+    var point = new Array(xSize);
+	for (var i = 0; i < xSize; i++) {
+            point[i] = new Array(ySize);
+			for (var j = 0; j < ySize; j++) {
+				point[i][j] = new Point(i,j,i*xDist, j*yDist);
 			}
     }
 	/*point[0] = new Array(100);
@@ -19,11 +22,11 @@
 
 
     /* Point OBJECT */
-    function Point(newX, newY) {
+    function Point(i,j,newX, newY) {
         var x = newX;
         var y = newY;
-        var dx = 2;
-        var dy = 4;
+		var nextX = x
+		var nextY = y
         var radius = 2;
         var targetColour = "blue";
 
@@ -31,6 +34,8 @@
         this.draw = draw;
 
         function draw() {
+			x = nextX
+			y = nextY
             g.beginPath();
             g.fillStyle = targetColour;
             g.arc(x, y, radius, 0, Math.PI * 2);
@@ -72,6 +77,7 @@
         this.move = move;
 
         function move() {
+			
         }
 
     }
@@ -86,8 +92,8 @@
 		g.canvas.height = window.innerHeight;
         //player.draw();
 
-        for (var i = 0; i < size; i++) {
-			for (var j = 0; j < size; j++){
+        for (var i = 0; i < xSize; i++) {
+			for (var j = 0; j < ySize; j++){
 				point[i][j].move();
 				point[i][j].draw();
 			}
