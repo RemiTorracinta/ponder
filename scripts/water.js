@@ -4,6 +4,7 @@
 	var yDist = window.innerHeight/(ySize-1); //vertical distance between points
 	var xDist = window.innerWidth/(xSize-1); //horizontal distance between points
     var point = new Array(xSize);
+	var speed = 0.5;
 	for (var i = 0; i < xSize; i++) {
             point[i] = new Array(ySize);
 			for (var j = 0; j < ySize; j++) {
@@ -23,6 +24,8 @@
 
     /* Point OBJECT */
     function Point(i,j,newX, newY) {
+		var i_idx = i
+		var j_idx = j
         var x = newX;
         var y = newY;
 		var nextX = x
@@ -76,14 +79,26 @@
 
         this.move = move;
 
-        function move() {
-			
         }
+		
+		function lerp(oldP,newP) {
+			return (oldP + (newP - oldP)*speed);
+		}
+		
+        function move() {
+			if (((i == 0 || i == xSize) || j == 0) || j == ySize){
+				nextX = this.x;
+				nextY = this.y;
+			} else {
+				finX = (point[i_idx-1][j_idx].getX() + point[i_idx+1][j_idx].getX())/2;
+				finY = (point[i_idx][j_idx-1].getY() + point[i_idx+1][j_idx+1].getY())/2;
+				nextX = lerp(x,finX);
+				nextY = lerp(x,finX);
+			}	
+		}
 
-    }
 
-
-
+	
 
     /* MAIN GAME */
     function playGame() {
@@ -95,21 +110,18 @@
         for (var i = 0; i < xSize; i++) {
 			for (var j = 0; j < ySize; j++){
 				point[i][j].move();
+			}
+			for (var j = 0; j < ySize; j++){
 				point[i][j].draw();
 			}
+			
         }
 
-        // draw the score
-        drawElapsedTime();
-
     }
-    /* SCORE */
-    var startTime;
-    // ending elapsed time in seconds
-    var score;
+
 
     
-
+	
 
 
     function click(e) {
@@ -125,6 +137,5 @@
     /* Assign a graphics context to the canvas, so that we can draw on it */
     var g = canvas.getContext("2d");
 
-    /* Do the function, call every 20 milliseconds*/
-    startTime = new Date();
-    var theInterval = setInterval(playGame, 20);
+    /* Do the function, call every 30 milliseconds*/
+    var theInterval = setInterval(playGame, 30);
