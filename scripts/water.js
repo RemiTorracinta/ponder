@@ -1,7 +1,10 @@
     /* Point Array */
-	var width = window.innerWidth
-	var height = window.innerHeight
-	var ySize = 20; //number of points in y dimension
+	var flag = 0;
+	var pNearI;
+	var pNearJ;
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	var ySize = 30; //number of points in y dimension
 	var xSize = Math.floor(ySize*width/height); //number of points in the x dimension
 	var yDist = window.innerHeight/(ySize-1); //vertical distance between points
 	var xDist = window.innerWidth/(xSize-1); //horizontal distance between points
@@ -87,12 +90,19 @@
 		this.move = move;
         
         function move() {
-			if (((i_idx == 0 || i_idx == (xSize-1)) || j_idx == 0) || j_idx == (ySize-1)){
+			isSel = ((i_idx == pNearI) && (j_idx == pNearJ) && (flag == 1))
+			if ((((i_idx == 0 || i_idx == (xSize-1)) || j_idx == 0) || j_idx == (ySize-1)) || isSel){
 				nextX = x;
 				nextY = y;
 			} else {
-				finX = (point[(i_idx - 1)][j_idx].getX() + point[(i_idx + 1)][j_idx].getX())/2;
-				finY = (point[i_idx][(j_idx - 1)].getY() + point[i_idx][(j_idx + 1)].getY())/2;
+				finX = (point[(i_idx - 1)][j_idx].getX() + 
+						point[(i_idx + 1)][j_idx].getX() +
+						point[i_idx][(j_idx - 1)].getX() + 
+						point[i_idx][(j_idx + 1)].getX())/4;
+				finY = (point[(i_idx - 1)][j_idx].getY() + 
+						point[(i_idx + 1)][j_idx].getY() +
+						point[i_idx][(j_idx - 1)].getY() + 
+						point[i_idx][(j_idx + 1)].getY())/4;
 				nextX = lerp(x,finX);
 				nextY = lerp(y,finY);
 			}	
@@ -125,16 +135,8 @@
 
     }
 
-
-    
-	
-	
-	
-	var pNearI;
-	var pNearJ;
 	var mX
 	var mY
-	var flag
 	document.addEventListener("mousedown", function(e){
 		flag = 1;
 		if (e.pageX || e.pageY) { 
@@ -146,10 +148,13 @@
 		}
 		mX -= canvas.offsetLeft;
 		mY -= canvas.offsetTop;
-		pNearI = Math.round(mX/width*xSize)
-		pNearJ = Math.round(mY/height*ySize)
-		point[pNearI][pNearJ].setX(mX)
-		point[pNearI][pNearJ].setY(mY)
+		pNearI = Math.round(mX/width*xSize);
+		pNearJ = Math.round(mY/height*ySize);
+		if (((pNearI == 0 || pNearI == (xSize-1)) || pNearJ == 0) || pNearJ == (ySize-1)){
+			return;
+		}
+		point[pNearI][pNearJ].setX(mX);
+		point[pNearI][pNearJ].setY(mY);
 	}, false);
 	document.addEventListener("mouseup", function(e){
 		flag = 0;
@@ -165,8 +170,11 @@
 			}
 			mX -= canvas.offsetLeft;
 			mY -= canvas.offsetTop;
-			point[pNearI][pNearJ].setX(mX)
-			point[pNearI][pNearJ].setY(mY)
+			if (((pNearI == 0 || pNearI == (xSize-1)) || pNearJ == 0) || pNearJ == (ySize-1)){
+				return;
+			}
+			point[pNearI][pNearJ].setX(mX);
+			point[pNearI][pNearJ].setY(mY);
 		}
 		
 	}, false);
