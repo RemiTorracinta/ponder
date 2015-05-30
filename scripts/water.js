@@ -5,12 +5,12 @@
 	var pNearJ;
 	var width = window.innerWidth;
 	var height = window.innerHeight;
-	var ySize = 30; //number of points in y dimension
+	var ySize = 20; //number of points in y dimension
 	var xSize = Math.floor(ySize*width/height); //number of points in the x dimension
 	var yDist = window.innerHeight/(ySize-1); //vertical distance between points
 	var xDist = window.innerWidth/(xSize-1); //horizontal distance between points
     var point = new Array(xSize);
-	var lerpSpeed = 0.5;
+	var lerpSpeed = 0.05;
 	var movSpeed = 100;
 	for (var i = 0; i < xSize; i++) {
             point[i] = new Array(ySize);
@@ -101,34 +101,45 @@
 				nextY = y;
 				return;
 			}
-			xs = [ point[(i_idx - 1)][j_idx].getX() + xDist,
-				point[(i_idx + 1)][j_idx].getX() - xDist,
+			xs = [ point[(i_idx - 1)][j_idx].getX(),
+				point[(i_idx + 1)][j_idx].getX(),
 				point[i_idx][(j_idx - 1)].getX(),
 				point[i_idx][(j_idx + 1)].getX()];
-			ys = [ point[(i_idx - 1)][j_idx].getX(),
-				point[(i_idx + 1)][j_idx].getX(),
-				point[i_idx][(j_idx - 1)].getX() + yDist,
-				point[i_idx][(j_idx + 1)].getX()] - yDist;
+			ys = [ point[(i_idx - 1)][j_idx].getY(),
+				point[(i_idx + 1)][j_idx].getY(),
+				point[i_idx][(j_idx - 1)].getY(),
+				point[i_idx][(j_idx + 1)].getY()] ;
+			finX = (point[(i_idx - 1)][j_idx].getX() + 
+					point[(i_idx + 1)][j_idx].getX() +
+					point[i_idx][(j_idx - 1)].getX() + 
+					point[i_idx][(j_idx + 1)].getX())/4;
+			finY = (point[(i_idx - 1)][j_idx].getY() + 
+					point[(i_idx + 1)][j_idx].getY() +
+					point[i_idx][(j_idx - 1)].getY() + 
+					point[i_idx][(j_idx + 1)].getY())/4;
 			switch(moveMode) {
 				case 1:
-					finX = xs[0];
-					finY = ys[0];
-					for (i=1; i < 4; i++){
-						finX = Math.abs(finX) > Math.abs(xs[i]) ? finX : xs[i];
-						finY = Math.abs(finY) > Math.abs(ys[i]) ? finX : ys[i];
+					if (xs[0] >= x){
+						finX = xs[0] + xDist/5;
+					} 
+					if (xs[1] <= x){
+						finX = xs[1] - xDist/5;
 					}
+					if (ys[2] >= y){
+						finY = ys[2] + yDist/5;;
+					} 
+					if (ys[3] <= y){
+						finY = ys[3] + yDist/5;;
+					} 
+					nextX = finX;
+					nextY = finY;
 					break;
 				default:
-					finX = (point[(i_idx - 1)][j_idx].getX() + 
-							point[(i_idx + 1)][j_idx].getX() +
-							point[i_idx][(j_idx - 1)].getX() + 
-							point[i_idx][(j_idx + 1)].getX())/4;
-					finY = (point[(i_idx - 1)][j_idx].getY() + 
-							point[(i_idx + 1)][j_idx].getY() +
-							point[i_idx][(j_idx - 1)].getY() + 
-							point[i_idx][(j_idx + 1)].getY())/4;
-					nextX = lerp(x,finX);
-					nextY = lerp(y,finY);
+					
+					//nextX = lerp(x,finX);
+					//nextY = lerp(y,finY);
+					nextX = finX;
+					nextY = finY
 			}
 		}
 	}
