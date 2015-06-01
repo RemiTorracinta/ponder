@@ -1,5 +1,8 @@
-    /* Point Array */
-	var moveMode = 1;
+    
+
+    // 0 = move to average of neighbors
+    // 1 = move towards furthers neighbor
+	var moveMode = 0;
 	var flag = 0;
 	var pNearI;
 	var pNearJ;
@@ -11,22 +14,15 @@
 	var xDist = window.innerWidth/(xSize-1); //horizontal distance between points
     var point = new Array(xSize);
 	var lerpSpeed = 0.05;
-	var movSpeed = 100;
+	var movSpeed = 10;
+
+	//Point 2D array
 	for (var i = 0; i < xSize; i++) {
             point[i] = new Array(ySize);
 			for (var j = 0; j < ySize; j++) {
 				point[i][j] = new Point(i,j,i*xDist, j*yDist);
 			}
     }
-	/*point[0] = new Array(100);
-    point[0][0] = new Point(100, 100); // x location of target, y location of target
-    point[1] = new Point(200, 350);
-    point[2] = new Point(400, 350);
-    point[3] = new Point(320, 250);
-    point[4] = new Point(440, 190);
-    point[5] = new Point(100, 350);
-    point[6] = new Point(80, 120);
-    point[7] = new Point(130, 240);*/
 
 
     /* Point OBJECT */
@@ -35,10 +31,13 @@
 		var j_idx = j
         var x = newX;
         var y = newY;
-		var nextX = x
-		var nextY = y
+		var nextX = x;
+		var nextY = y;
         var radius = 2;
         var targetColour = "blue";
+        //velocity, used for some movement patterns
+        var velX = 0;
+        var velY = 0;
 
         /* public methods */
         this.draw = draw;
@@ -57,7 +56,8 @@
 			return (oldP + (newP - oldP)*lerpSpeed);
 		}
 		function max(oldP,newP) {
-			return (oldP + Math.max((newP - oldP),movSpeed));
+			travel = Math.min(Math.abs(newP - oldP),movSpeed);
+			return (oldP + ((newP > oldP) ? travel : (-1)*travel))
 		}
 		
 		
@@ -109,35 +109,40 @@
 				point[(i_idx + 1)][j_idx].getY(),
 				point[i_idx][(j_idx - 1)].getY(),
 				point[i_idx][(j_idx + 1)].getY()] ;
-			finX = (point[(i_idx - 1)][j_idx].getX() + 
-					point[(i_idx + 1)][j_idx].getX() +
-					point[i_idx][(j_idx - 1)].getX() + 
-					point[i_idx][(j_idx + 1)].getX())/4;
-			finY = (point[(i_idx - 1)][j_idx].getY() + 
-					point[(i_idx + 1)][j_idx].getY() +
-					point[i_idx][(j_idx - 1)].getY() + 
-					point[i_idx][(j_idx + 1)].getY())/4;
+			
 			switch(moveMode) {
 				case 1:
-					if (xs[0] >= x){
-						finX = xs[0] + xDist/5;
-					} 
-					if (xs[1] <= x){
-						finX = xs[1] - xDist/5;
+					cDist = 0;
+					finX = x;
+					finY = y;
+					for (i = 0; i < 4; i++){
+						nDist = Math.pow(Math.abs(xs[i]-x),2) + Math.pow(Math.abs(ys[i]- y),2);
+						if (nDist > cDist) {
+							cDist = nDist;
+							finX = xs[i];
+							finY = ys[i];
+						}
 					}
-					if (ys[2] >= y){
-						finY = ys[2] + yDist/5;;
-					} 
-					if (ys[3] <= y){
-						finY = ys[3] + yDist/5;;
-					} 
-					nextX = finX;
-					nextY = finY;
+					nextX = lerp(x,finX);
+					nextY = lerp(y,finY);
+					//nextX = max(x,finX);
+					//nextY = max(y,finY);
+					//nextX = finX;
+					//nextY = finY;
 					break;
 				default:
-					
+					finX = (point[(i_idx - 1)][j_idx].getX() + 
+							point[(i_idx + 1)][j_idx].getX() +
+							point[i_idx][(j_idx - 1)].getX() + 
+							point[i_idx][(j_idx + 1)].getX())/4;
+					finY = (point[(i_idx - 1)][j_idx].getY() + 
+							point[(i_idx + 1)][j_idx].getY() +
+							point[i_idx][(j_idx - 1)].getY() + 
+							point[i_idx][(j_idx + 1)].getY())/4;
 					//nextX = lerp(x,finX);
 					//nextY = lerp(y,finY);
+					//nextX = max(x,finX);
+					//nextY = max(y,finY);
 					nextX = finX;
 					nextY = finY
 			}
