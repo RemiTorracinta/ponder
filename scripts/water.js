@@ -1,8 +1,14 @@
     
 
     // 0 = move to average of neighbors
-    // 1 = move towards furthers neighbor
-	var moveMode = 0;
+    // 1 = move towards furtherst neighbor
+    // 2 = simple harmonic (springs between neighbors) plus damping
+	var moveMode = 1;
+
+	// true = hold on to last selected dot
+	// false = grab nearest dot
+	var grabNearest = false;
+
 	var flag = 0;
 	var pNearI;
 	var pNearJ;
@@ -15,7 +21,8 @@
     var point = new Array(xSize);
 	var lerpSpeed = 0.05;
 	var movSpeed = 10;
-
+	var rstrCoef = 0.1;
+	var dampCoef = rstrCoef * 1.2;
 	//Point 2D array
 	for (var i = 0; i < xSize; i++) {
             point[i] = new Array(ySize);
@@ -101,6 +108,7 @@
 				nextY = y;
 				return;
 			}
+			//coordinates of neighbor positions (left right down up)
 			xs = [ point[(i_idx - 1)][j_idx].getX(),
 				point[(i_idx + 1)][j_idx].getX(),
 				point[i_idx][(j_idx - 1)].getX(),
@@ -108,17 +116,39 @@
 			ys = [ point[(i_idx - 1)][j_idx].getY(),
 				point[(i_idx + 1)][j_idx].getY(),
 				point[i_idx][(j_idx - 1)].getY(),
-				point[i_idx][(j_idx + 1)].getY()] ;
-			
+				point[i_idx][(j_idx + 1)].getY()];
+
 			switch(moveMode) {
+				case 2:
+					forceX = 0
+					forceY = 0
+					for (i = 0; i < 4; i++){
+						forceX += (xs[i] - x);
+						forceY += (ys[i] - y);
+					}
+					dampX = (-1)*dampCoef*velX;
+					dampY = (-1)*dampCoef*velY;
+					velX += forceX*rstrCoef+dampX;
+					velY += forceY*rstrCoef+dampY;
+					nextX = x + velX
+					nextY = y + velY
+					//nextX = max(x,finX);
+					//nextY = max(y,finY);
+					//nextX = finX;
+					//nextY = finY;
+					break;
 				case 1:
+					//distance squared from each neighbor
+					dists = new Array(4);
+					for (i = 0; i < 4; i++){
+						dists[i] = Math.pow(Math.abs(xs[i]- x),2) + Math.pow(Math.abs(ys[i]- y),2);
+					}
 					cDist = 0;
 					finX = x;
 					finY = y;
 					for (i = 0; i < 4; i++){
-						nDist = Math.pow(Math.abs(xs[i]-x),2) + Math.pow(Math.abs(ys[i]- y),2);
-						if (nDist > cDist) {
-							cDist = nDist;
+						if (dists[i] > cDist) {
+							cDist = dists[i];
 							finX = xs[i];
 							finY = ys[i];
 						}
@@ -155,8 +185,8 @@
 
 	
 
-    /* MAIN GAME */
-    function playGame() {
+    /* MAIN DEMO */
+    function playDemo() {
         g.clearRect(0, 0, canvas.width, canvas.height); //Clear canvas at start.
 		g.canvas.width  = window.innerWidth;
 		g.canvas.height = window.innerHeight;
@@ -209,6 +239,10 @@
 			}
 			mX -= canvas.offsetLeft;
 			mY -= canvas.offsetTop;
+			if (grabNearest) {
+				pNearI = Math.round(mX/width*xSize);
+				pNearJ = Math.round(mY/height*ySize);
+			}
 			if (((pNearI == 0 || pNearI == (xSize-1)) || pNearJ == 0) || pNearJ == (ySize-1)){
 				return;
 			}
@@ -226,4 +260,4 @@
     var g = canvas.getContext("2d");
 
     /* Do the function, call every 30 milliseconds*/
-    var theInterval = setInterval(playGame, 20);
+    var theInterval = setInterval(playDemo, 20);
