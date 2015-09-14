@@ -24,7 +24,6 @@ body {
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
 	border-radius:3px;
-	border:1px solid #0b0e07;
 	display:inline-block;
 	cursor:pointer;
 	color:#ffffff;
@@ -32,7 +31,7 @@ body {
 	font-size:15px;
 	padding:9px 23px;
 	text-decoration:none;
-	text-shadow:0px 1px 0px #263666;
+    opacity:0.7
 }
 .myButton:hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #0688fa), color-stop(1, #2dabf9));
@@ -43,8 +42,30 @@ body {
 	background:linear-gradient(to bottom, #0688fa 5%, #2dabf9 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#0688fa', endColorstr='#2dabf9',GradientType=0);
 	background-color:#0688fa;
+    opacity:0.5
 }
 .myButton:active {
 	position:absolute;
 	top:1px;
+}
+
+.transbox
+{
+  position:absolute;
+  bottom: 0px;
+  background-color:#0688fa;
+  opacity:0.5;
+  font-family:Arial;
+  font-size:15px;
+  text-decoration:none;
+  border-radius:3px;
+  padding:7px 23px;
+  /*background-image: url('images/blue20.png');
+  background-repeat: repeat;
+  */
+}
+.transbox p
+{
+  margin: 0%;
+  color: #FFFFFF;
 }

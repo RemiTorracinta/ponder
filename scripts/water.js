@@ -2,7 +2,7 @@
 // 1 = move towards furtherst neighbor
 // 2 = simple harmonic (springs between neighbors) plus damping
 var moveMode = 0;
-var Modes = ["neighbors' centroid", "furthest neighbor", "simple harmonic"]
+var Modes = ["neighbours' centroid", "furthest neighbour", "simple harmonic"]
 // true = hold on to last selected dot
 // false = grab nearest dot
 var grabNearest = false;
