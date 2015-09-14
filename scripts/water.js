@@ -1,8 +1,8 @@
 // 0 = move to average of neighbors
 // 1 = move towards furtherst neighbor
 // 2 = simple harmonic (springs between neighbors) plus damping
-var moveMode = 1;
-
+var moveMode = 0;
+var Modes = ["neighbors' centroid", "furthest neighbor", "simple harmonic"]
 // true = hold on to last selected dot
 // false = grab nearest dot
 var grabNearest = false;
@@ -11,8 +11,8 @@ var flag = 0;
 var pNearI;
 var pNearJ;
 var width = window.innerWidth;
-var height = window.innerHeight;
 // number of points in y dimension
+var height = window.innerHeight;
 var ySize = 20;
 // number of points in the x dimension
 var xSize = Math.floor(ySize * width / height);
@@ -33,6 +33,11 @@ for (var i = 0; i < xSize; i++) {
   }
 }
 
+/*movement button clicked*/
+function changeMode(){
+    moveMode = (moveMode + 1)%3
+    document.getElementById("modeButton").innerHTML = Modes[moveMode];
+}
 
 /* Point OBJECT */
 function Point(i, j, newX, newY) {
