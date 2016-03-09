@@ -2,7 +2,7 @@
 // 1 = move towards furtherst neighbor
 // 2 = simple harmonic (springs between neighbors) plus damping
 var moveMode = 0;
-var Modes = ["neighbours' centroid", "furthest neighbour", "simple harmonic"]
+var Modes = ["furthest neighbour","neighbours' centroid", "simple harmonic"]
 // true = hold on to last selected dot
 // false = grab nearest dot
 var grabNearest = false;
@@ -141,6 +141,24 @@ function Point(i, j, newX, newY) {
         // nextY = finY;
         break;
       case 1:
+        finX = (point[(i_idx - 1)][j_idx].getX() +
+                point[(i_idx + 1)][j_idx].getX() +
+                point[i_idx][(j_idx - 1)].getX() +
+                point[i_idx][(j_idx + 1)].getX()) /
+               4;
+        finY = (point[(i_idx - 1)][j_idx].getY() +
+                point[(i_idx + 1)][j_idx].getY() +
+                point[i_idx][(j_idx - 1)].getY() +
+                point[i_idx][(j_idx + 1)].getY()) /
+               4;
+        // nextX = lerp(x,finX);
+        // nextY = lerp(y,finY);
+        // nextX = max(x,finX);
+        // nextY = max(y,finY);
+        nextX = finX;
+        nextY = finY;
+        break;
+      default:
         // distance squared from each neighbor
         dists = new Array(4);
         for (i = 0; i < 4; i++) {
@@ -163,24 +181,6 @@ function Point(i, j, newX, newY) {
         // nextY = max(y,finY);
         // nextX = finX;
         // nextY = finY;
-        break;
-      default:
-        finX = (point[(i_idx - 1)][j_idx].getX() +
-                point[(i_idx + 1)][j_idx].getX() +
-                point[i_idx][(j_idx - 1)].getX() +
-                point[i_idx][(j_idx + 1)].getX()) /
-               4;
-        finY = (point[(i_idx - 1)][j_idx].getY() +
-                point[(i_idx + 1)][j_idx].getY() +
-                point[i_idx][(j_idx - 1)].getY() +
-                point[i_idx][(j_idx + 1)].getY()) /
-               4;
-        // nextX = lerp(x,finX);
-        // nextY = lerp(y,finY);
-        // nextX = max(x,finX);
-        // nextY = max(y,finY);
-        nextX = finX;
-        nextY = finY;
     }
   }
 }
